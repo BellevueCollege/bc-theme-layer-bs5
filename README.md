@@ -28,6 +28,7 @@ Import the Bootstrap config layer first, then import presets as needed:
 
 ### Available Presets
 
+- **_full.scss**: All Bootstrap components (complete Bootstrap import)
 - **_minimal.scss**: Core components (reboot, type, images, containers, grid, buttons, transitions, card, accordion, badge, modal, tooltip, placeholders)
 - **_forms.scss**: Forms, dropdown, button-group
 - **_nav.scss**: Nav, navbar
