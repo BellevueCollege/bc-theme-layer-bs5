@@ -1,0 +1,14 @@
+////
+/// Bootstrap 5 Configuration Layer
+/// Imports Bootstrap core in correct order with tokens BEFORE variables to enable overrides
+////
+
+@import '~bootstrap/scss/functions';
+@import './tokens'; // Apply theme overrides BEFORE Bootstrap variables
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/maps';
+@import '~bootstrap/scss/mixins';
+@import '~bootstrap/scss/utilities';
+@import '~bootstrap/scss/root';
+@import '~bootstrap/scss/helpers';
+@import '~bootstrap/scss/utilities/api';

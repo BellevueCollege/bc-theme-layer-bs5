@@ -1,0 +1,9 @@
+////
+/// Forms Bootstrap Components Preset
+/// Imports forms, dropdown, button-group
+/// Contract: This preset imports ONLY Bootstrap components, NOT config
+////
+
+@import '~bootstrap/scss/forms';
+@import '~bootstrap/scss/dropdown';
+@import '~bootstrap/scss/button-group';

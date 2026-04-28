@@ -1,0 +1,10 @@
+////
+/// Editor Scoping Helper
+/// Wraps styles in .editor-styles-wrapper for Gutenberg editor
+////
+
+@mixin editor-scope {
+  .editor-styles-wrapper {
+    @content;
+  }
+}

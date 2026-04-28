@@ -1,0 +1,29 @@
+{
+  "name": "bc-theme-layer-bs5",
+  "version": "1.0.0",
+  "description": "Shared Bootstrap 5 SCSS configuration for Bellevue College WordPress themes",
+  "keywords": [
+    "wordpress",
+    "bootstrap",
+    "scss"
+  ],
+  "homepage": "https://github.com/BellevueCollege/bc-theme-layer-bs5#readme",
+  "bugs": {
+    "url": "https://github.com/BellevueCollege/bc-theme-layer-bs5/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BellevueCollege/bc-theme-layer-bs5.git"
+  },
+  "license": "GPL-3.0-or-later",
+  "author": "BC ITS Integration (Taija Tevia-Clark)",
+  "type": "module",
+  "main": "js/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "@popperjs/core": "^2.11.8"
+  }
+}
