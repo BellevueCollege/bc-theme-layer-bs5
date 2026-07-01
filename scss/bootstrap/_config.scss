@@ -1,0 +1,14 @@
+////
+/// Full Bootstrap configuration layer — variables/mixins **plus** CSS output.
+///
+/// **When to import:** `bootstrap.scss` and `bootstrap-editor.scss` (outside editor scope).
+/// Import theme `variables` first so BC token overrides are in scope.
+///
+/// **Contract:** Imports `_vars` then Bootstrap `root`, `helpers`, and `utilities/api`.
+/// Do not import component presets here — use `presets/` partials separately.
+////
+
+@import './vars';
+@import '~bootstrap/scss/root';
+@import '~bootstrap/scss/helpers';
+@import '~bootstrap/scss/utilities/api';

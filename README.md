@@ -1,127 +1,157 @@
 # bc-theme-layer-bs5
 
-Shared Bootstrap 5 SCSS configuration for Bellevue College WordPress themes. This package eliminates Bootstrap 5 configuration drift between themes by providing a single source of truth for Bootstrap SCSS, variable overrides, component presets, and editor scoping.
+Shared Bootstrap 5 SCSS configuration for Bellevue College WordPress themes. Single source of truth for Bootstrap tokens, the Sass config stack, component presets, CSS variable generation, editor scoping, and JS init helpers.
 
 ## Installation
 
-Add this package as a git-based dependency in your theme's `package.json`:
-
 ```json
-"bc-theme-layer-bs5": "github:BellevueCollege/bc-theme-layer-bs5#v1.0.0"
+"bc-theme-layer-bs5": "github:BellevueCollege/bc-theme-layer-bs5#v1.1.0"
 ```
 
 Then run `npm install`.
 
-## Usage
+### Local development (`npm link`)
 
-### Basic Setup
+Before `v1.1.0` is tagged, link this repo into consuming themes so builds use your working copy:
 
-Import the Bootstrap config layer first, then import presets as needed:
+```bash
+# In bc-theme-layer-bs5
+npm link
 
-```scss
-// Import Bootstrap configuration
-@import 'bc-theme-layer-bs5/scss/config/_bootstrap-config';
-
-// Import component presets
-@import 'bc-theme-layer-bs5/scss/presets/_minimal';
+# In bellevue-2022 or bc-sitka-spruce-department-theme
+npm link bc-theme-layer-bs5
 ```
 
-### Available Presets
+Themes keep `github:BellevueCollege/bc-theme-layer-bs5#v1.0.1` in `package.json` for CI and fresh installs; `npm link` overrides `node_modules/bc-theme-layer-bs5` locally. Re-run `npm link bc-theme-layer-bs5` after `npm install` if the symlink is removed.
 
-- **_full.scss**: All Bootstrap components (complete Bootstrap import)
-- **_minimal.scss**: Core components (reboot, type, images, containers, grid, buttons, transitions, card, accordion, badge, modal, tooltip, placeholders)
-- **_forms.scss**: Forms, dropdown, button-group
-- **_nav.scss**: Nav, navbar
-- **_tabs.scss**: Nav only (for tab components)
-- **_alert.scss**: Alert
-- **_tables.scss**: Tables
+To unlink: `npm unlink bc-theme-layer-bs5` in the theme, then `npm install`.
 
-### Editor Scoping
 
-Import the editor scoping mixin and use it to wrap styles for the Gutenberg editor:
+```
+bc-theme-layer-bs5/
+├── js/index.js
+└── scss/
+    ├── bootstrap/
+    │   ├── _tokens.scss      # BC variable overrides (!default)
+    │   ├── _vars.scss        # Sass only — no CSS output
+    │   └── _config.scss      # _vars + root/helpers/utilities/api
+    ├── css-variables/
+    │   └── _css-variables.scss
+    ├── editor/
+    │   └── _editor-scope.scss
+    └── presets/
+        ├── _minimal.scss
+        ├── _full.scss
+        ├── _alert.scss
+        ├── _forms.scss
+        ├── _nav.scss
+        └── _tables.scss
+```
+
+## Import decision tree
+
+| Import when… | File |
+|--------------|------|
+| Theme `_variables.scss` needs shared BC tokens | `bootstrap/_tokens` |
+| Theme needs Sass variables/mixins only (`main.scss`, `editor.scss`, block-styles) | `bootstrap/_vars` |
+| Theme needs CSS output + components (`bootstrap.scss`, `bootstrap-editor.scss`) | `bootstrap/_config` |
+| Theme generates `:root` custom properties | `css-variables/_css-variables` |
+| Theme scopes editor Bootstrap | `editor/_editor-scope` + `@include editor-scope` |
+
+## Naming reference
+
+- **`$brand-colors`** — BC official brand palette (keys include `bc-` prefix)
+- **`$utility-colors`** — Shared utility/theme colors (used in tokens and CSS var generator)
+- **`$css-var-prefix`** — Prefix for generated custom properties (`sitka-` default; Bellevue uses `b22-`)
+- **`get_color()` / `css_color()`** — Sass helpers for map lookups and `var(--name)` references
+
+Set `$css-var-prefix` **before** importing `bootstrap/_tokens` if overriding the default.
+
+## Usage
+
+### Bootstrap CSS bundle (`bootstrap.scss`)
 
 ```scss
-@import 'bc-theme-layer-bs5/scss/editor/_scope';
+@import 'variables';
+@import 'bc-theme-layer-bs5/scss/bootstrap/_config';
+@import 'bc-theme-layer-bs5/scss/presets/_minimal'; // or _full
+```
+
+### Theme styles (`main.scss`) — vars only, no duplicate CSS
+
+```scss
+@import 'variables';
+@import 'variables/css';
+@import 'bc-theme-layer-bs5/scss/bootstrap/_vars';
+// ... theme layers
+```
+
+### Editor Bootstrap (`bootstrap-editor.scss`)
+
+```scss
+@import 'variables';
+@import 'bc-theme-layer-bs5/scss/bootstrap/_config';
+@import 'bc-theme-layer-bs5/scss/editor/_editor-scope';
 
 @include editor-scope {
   @import 'bc-theme-layer-bs5/scss/presets/_minimal';
+  @import 'bc-theme-layer-bs5/scss/presets/_nav';
 }
 ```
 
-### CSS Variable Generation
+Import config **outside** `@include editor-scope` so `:root` rules are not nested invalidly.
 
-Import the CSS variable generation module to generate responsive CSS variables:
+### CSS variable generation
 
 ```scss
-@import 'bc-theme-layer-bs5/scss/css-variables/_generate' with (
+@use 'bc-theme-layer-bs5/scss/css-variables/_css-variables' with (
   $css-var-prefix: 'sitka-',
-  $generate-heading-vars: true,
+  $prefixed-utility-colors: false,
+  $prefixed-container-spacing: true,
+  $prefixed-heading-sizes: true,
+  $generate-heading-size-vars: true,
   $generate-container-spacing: true,
-  $heading-sizes: $your-heading-sizes-map,
-  $brand-colors: $your-brand-colors-map,
-  $theme-colors: $your-theme-colors-map,
-  $grid-breakpoints: $your-grid-breakpoints-map
+  $heading-sizes: $heading-sizes,
+  $brand-colors: $brand-colors,
+  $utility-colors: $utility-colors,
+  $grid-breakpoints: $grid-breakpoints
 );
 ```
 
-#### Expected Data Structures
+**Never pass `$grid-breakpoints: null`** when heading size vars are enabled.
 
-- **$brand-colors**: Map with keys like `'bc-brutus-blue'` (includes bc- prefix in key)
-- **$theme-colors**: Map with keys like `'white'`, `'black'` (no prefix in key)
-- **$heading-sizes**: Nested map structure: `h1: (xs: (font-size: 2rem, line-height: 1.2), md: (...), lg: (...))`
-- **$grid-breakpoints**: Map like `(xs: 0, sm: 641px, md: 769px, lg: 1025px, xl: 1281px, xxl: 1441px)`
-
-### JavaScript Helpers
-
-Import Bootstrap initialization helpers:
+### JavaScript helpers
 
 ```javascript
-import { initTooltips, initPopovers, setWindowBootstrap } from 'bc-theme-layer-bs5/js';
-
-// Initialize tooltips
-initTooltips();
-
-// Initialize popovers
-initPopovers();
-
-// Set bootstrap on window for legacy compatibility
-setWindowBootstrap();
+import { bootstrap, initTooltips, initPopovers, setWindowBootstrap } from 'bc-theme-layer-bs5/js';
 ```
 
-## Configuration
+- `initTooltips()` — Sitka
+- `initPopovers()` — Bellevue (popovers used as tooltips)
+- `setWindowBootstrap()` — exposes `window.bootstrap` for legacy scripts
 
-### Tokens Layer
+## Presets
 
-The shared package uses bc-sitka-spruce-department-theme values as the standard for Bootstrap variable overrides. Themes can override these values in their local variable files before importing the shared config.
+| Preset | Contents |
+|--------|----------|
+| `_full` | All Bootstrap components |
+| `_minimal` | Core components; commented lines are an opt-in menu |
+| `_forms` | forms, dropdown, button-group |
+| `_nav` | nav, navbar (use for tabs) |
+| `_alert` | alert |
+| `_tables` | tables |
 
-### Color Values
+**Contract:** Presets import Bootstrap components only — never config or tokens.
 
-The shared package defines standard BC color maps (`$brand-colors` and `$utility-colors`) with named colors that are used throughout the Bootstrap configuration. Themes can override these values in their local variable files before importing the shared config, or use the provided `css_color()` function to reference CSS variables.
+## Preset contract
 
-### Dependencies
+Import config once per bundle, then presets. Prevents duplicate CSS and unpredictable ordering.
 
-This package includes Bootstrap and @popperjs/core as regular dependencies:
+## Roadmap
 
-```json
-"dependencies": {
-  "bootstrap": "^5.3.3",
-  "@popperjs/core": "^2.11.8"
-}
-```
-
-These are installed automatically when you install this package.
-
-## Preset Contract
-
-**Important**: Presets import ONLY Bootstrap components, NOT config. Themes must import config once, then import presets. This prevents duplicate CSS and unpredictable ordering.
-
-## Versioning
-
-This package uses semantic versioning and git tags. Use exact version tags in package.json for reproducibility:
-
-```json
-"bc-theme-layer-bs5": "github:BellevueCollege/bc-theme-layer-bs5#v1.0.0"
-```
+- Bellevue migration from `_full` → `_minimal` + block-level presets (Sitka pattern)
+- Sass `@import` → `@use` when Bootstrap 6 supports it
+- Optional shared helpers for Tab/Collapse if themes converge
 
 ## License
 

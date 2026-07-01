@@ -1,0 +1,21 @@
+////
+/// Gutenberg editor scoping mixin.
+///
+/// **When to import:** `bootstrap-editor.scss` — import config and variables *outside*
+/// this mixin; wrap component presets inside `@include editor-scope { ... }`.
+///
+/// **Contract:** Scopes output to `.editor-styles-wrapper` only. Never nest `:root` or
+/// full Bootstrap config inside this mixin — invalid CSS and duplicate variables result.
+///
+/// @example scss
+///   @import 'bc-theme-layer-bs5/scss/editor/_editor-scope';
+///   @include editor-scope {
+///     @import 'bc-theme-layer-bs5/scss/presets/_minimal';
+///   }
+////
+
+@mixin editor-scope {
+  .editor-styles-wrapper {
+    @content;
+  }
+}

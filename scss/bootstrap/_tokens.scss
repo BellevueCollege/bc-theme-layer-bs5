@@ -1,6 +1,15 @@
 ////
-/// Bootstrap 5 Variable Overrides
-/// Unified BC standard configuration - no theme-specific overrides
+/// BC Bootstrap token overrides (`!default` values).
+///
+/// **When to import:** theme `_variables.scss` only — before other variable partials.
+///
+/// **Override rule:** themes that need a non-default `$css-var-prefix` must assign it
+/// on the line *before* `@import 'bc-theme-layer-bs5/scss/bootstrap/_tokens'`.
+/// `!default` only honors a value set prior to import; setting it afterward has no effect
+/// on heading `var(--prefix...)` strings evaluated here.
+///
+/// **Contract:** BC-wide Bootstrap Sass variables and helper functions only.
+/// Do not import Bootstrap partials or emit CSS from this file.
 ////
 
 @use "sass:map";
@@ -30,6 +39,10 @@
     @return var(--#{$name});
 }
 
+// Theme prefix for generated CSS custom properties (headings, utility colors, spacing).
+// Sitka keeps the default; Bellevue sets `$css-var-prefix: 'b22-';` before importing tokens.
+$css-var-prefix: 'sitka-' !default;
+
 // BC Official Brand Colors
 $brand-colors: (
     'bc-brutus-blue': #003d79,
@@ -42,7 +55,7 @@ $brand-colors: (
     'bc-rainy-night-blue': #162f57
 );
 
-// Other utility colors (named for easy reference)
+// Utility colors referenced by Bootstrap theme maps and theme SCSS
 $utility-colors: (
     'white': #ffffff,
     'black': #000000,
@@ -94,13 +107,13 @@ $line-height-base: 1.8;
 $font-size-base: 1rem;
 $lead-font-size: 1.5rem;
 
-// Heading sizes - use CSS variables so they can be overridden
-$h1-font-size: var(--sitka-h1-font-size);
-$h2-font-size: var(--sitka-h2-font-size);
-$h3-font-size: var(--sitka-h3-font-size);
-$h4-font-size: var(--sitka-h4-font-size);
-$h5-font-size: var(--sitka-h5-font-size);
-$h6-font-size: var(--sitka-h6-font-size);
+// Heading sizes reference theme-generated CSS variables (prefix set above)
+$h1-font-size: var(--#{$css-var-prefix}h1-font-size);
+$h2-font-size: var(--#{$css-var-prefix}h2-font-size);
+$h3-font-size: var(--#{$css-var-prefix}h3-font-size);
+$h4-font-size: var(--#{$css-var-prefix}h4-font-size);
+$h5-font-size: var(--#{$css-var-prefix}h5-font-size);
+$h6-font-size: var(--#{$css-var-prefix}h6-font-size);
 
 // Border radius
 $border-radius: .5rem;
@@ -149,7 +162,7 @@ $input-border-color: map-get($brand-colors, 'bc-bulldog-silver');
 $input-focus-border-color: map-get($brand-colors, 'bc-brutus-blue');
 $input-focus-box-shadow: 0 0 2px map-get($brand-colors, 'bc-brutus-blue');
 
-// Configurable button hover (default: no special hover)
+// Configurable button hover (themes override in _bootstrap-overrides.scss)
 $btn-hover-color: null;
 
 // Bootstrap theme colors (BC standard)
@@ -162,7 +175,7 @@ $danger: map-get($brand-colors, 'bc-fall-maple-red');
 $light: map-get($utility-colors, 'gray--xlight');
 $dark: map-get($utility-colors, 'gray--dark');
 
-// Accordion icon functions (FontAwesome SVG data URIs)
+// Accordion icon functions (Font Awesome SVG data URIs — retained for cross-theme consistency)
 @function accordion-icon-open($fill) {
   @return url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="#{$fill}"><!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344V280H168c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V168c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H280v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/></svg>');
 }

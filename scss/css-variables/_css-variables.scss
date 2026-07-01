@@ -1,0 +1,117 @@
+////
+/// `:root` CSS custom property generator.
+///
+/// **When to import:** theme `variables/_css.scss` via `@use ... with (...)`.
+/// Import after shared tokens so `$brand-colors`, `$utility-colors`, and
+/// `$grid-breakpoints` are defined.
+///
+/// **Contract:** Emits `:root` rules only. Does not import Bootstrap Sass variables.
+////
+
+@use "sass:map";
+
+/// @param {String} $css-var-prefix ['sitka-'] - Prefix for generated custom properties (`b22-` for Bellevue).
+$css-var-prefix: 'sitka-' !default;
+
+/// @param {Boolean} $prefixed-utility-colors [true] - Prefix keys from `$utility-colors` (Bellevue: true, Sitka: false).
+$prefixed-utility-colors: true !default;
+
+/// @param {Boolean} $prefixed-container-spacing [true] - Prefix the container-spacing custom property.
+$prefixed-container-spacing: true !default;
+
+/// @param {Boolean} $prefixed-heading-sizes [true] - Prefix responsive heading size custom properties.
+$prefixed-heading-sizes: true !default;
+
+/// @param {Boolean} $generate-heading-size-vars [true] - Emit responsive heading font-size variables.
+$generate-heading-size-vars: true !default;
+
+/// @param {Boolean} $generate-container-spacing [true] - Emit container-spacing variable with responsive updates.
+$generate-container-spacing: true !default;
+
+/// @param {Map|null} $heading-sizes - Nested map: `h1: (xs: (font-size: 2rem), md: (...), lg: (...))`. Required when heading vars are enabled.
+$heading-sizes: null !default;
+
+/// @param {Map|null} $brand-colors - BC brand color map (keys include `bc-` prefix). Required for brand var output.
+$brand-colors: null !default;
+
+/// @param {Map|null} $utility-colors - Theme utility color map. Required for utility var output.
+$utility-colors: null !default;
+
+/// @param {Map|null} $grid-breakpoints - **Must not be null** when heading vars are enabled — drives md/lg media queries.
+$grid-breakpoints: null !default;
+
+:root {
+    @if $brand-colors {
+        @each $name, $value in $brand-colors {
+            --#{$name}: #{$value};
+        }
+    }
+
+    @if $utility-colors {
+        @each $name, $value in $utility-colors {
+            @if $prefixed-utility-colors {
+                --#{$css-var-prefix}#{$name}: #{$value};
+            } @else {
+                --#{$name}: #{$value};
+            }
+        }
+    }
+
+    @if $generate-container-spacing {
+        @if $prefixed-container-spacing {
+            --#{$css-var-prefix}container-spacing: 0.75rem;
+        } @else {
+            --container-spacing: 0.75rem;
+        }
+    }
+
+    @if $generate-heading-size-vars and $heading-sizes {
+        @each $tag, $sizes in $heading-sizes {
+            @each $breakpoint, $size in $sizes {
+                @if $prefixed-heading-sizes {
+                    --#{$css-var-prefix}#{$tag}-font-size-#{$breakpoint}: #{map.get($size, 'font-size')};
+                } @else {
+                    --#{$tag}-font-size-#{$breakpoint}: #{map.get($size, 'font-size')};
+                }
+            }
+            @if $prefixed-heading-sizes {
+                --#{$css-var-prefix}#{$tag}-font-size: var(--#{$css-var-prefix}#{$tag}-font-size-xs);
+            } @else {
+                --#{$tag}-font-size: var(--#{$tag}-font-size-xs);
+            }
+        }
+    }
+}
+
+@if $generate-heading-size-vars and $heading-sizes and $grid-breakpoints {
+    @media screen and (min-width: map.get($grid-breakpoints, 'md')) {
+        :root {
+            @each $tag, $sizes in $heading-sizes {
+                @if $prefixed-heading-sizes {
+                    --#{$css-var-prefix}#{$tag}-font-size: var(--#{$css-var-prefix}#{$tag}-font-size-md);
+                } @else {
+                    --#{$tag}-font-size: var(--#{$tag}-font-size-md);
+                }
+            }
+        }
+    }
+
+    @media screen and (min-width: map.get($grid-breakpoints, 'lg')) {
+        :root {
+            @if $generate-container-spacing {
+                @if $prefixed-container-spacing {
+                    --#{$css-var-prefix}container-spacing: 3.75rem;
+                } @else {
+                    --container-spacing: 3.75rem;
+                }
+            }
+            @each $tag, $sizes in $heading-sizes {
+                @if $prefixed-heading-sizes {
+                    --#{$css-var-prefix}#{$tag}-font-size: var(--#{$css-var-prefix}#{$tag}-font-size-lg);
+                } @else {
+                    --#{$tag}-font-size: var(--#{$tag}-font-size-lg);
+                }
+            }
+        }
+    }
+}

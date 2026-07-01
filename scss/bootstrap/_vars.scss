@@ -1,0 +1,19 @@
+////
+/// Bootstrap Sass variables and mixins only — **no CSS output**.
+///
+/// **When to import:** `main.scss`, `editor.scss`, and block-style bundles that need
+/// Bootstrap variables/mixins without duplicating `:root`, helpers, or utility classes.
+///
+/// **Contrast with `_config.scss`:** `_config` imports this file then emits CSS
+/// (`root`, `helpers`, `utilities/api`). Use `_vars` anywhere you need tokens but
+/// already load Bootstrap CSS via a separate `bootstrap.css` bundle.
+///
+/// **Contract:** Bootstrap functions through utilities partial only. No component CSS.
+////
+
+@import '~bootstrap/scss/functions';
+@import './tokens';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/maps';
+@import '~bootstrap/scss/mixins';
+@import '~bootstrap/scss/utilities';

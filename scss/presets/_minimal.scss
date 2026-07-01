@@ -1,7 +1,11 @@
 ////
 /// Minimal Bootstrap Components Preset
-/// Imports core components only (reboot, type, images, containers, grid, buttons, transitions, card, accordion, badge, modal, tooltip, placeholders)
-/// Contract: This preset imports ONLY Bootstrap components, NOT config
+/// Imports core components (reboot, type, images, containers, grid, buttons, transitions, card, accordion, badge, modal, tooltip, placeholders).
+///
+/// **When to import:** `bootstrap.scss` / `bootstrap-editor.scss` after `bootstrap/_config`.
+///
+/// **Contract:** Bootstrap component `@import`s only — never import config or tokens here.
+/// Commented `@import` lines are an intentional opt-in menu for future enablement.
 ////
 
 @import "~bootstrap/scss/reboot";

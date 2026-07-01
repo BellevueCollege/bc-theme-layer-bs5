@@ -1,28 +1,40 @@
-////
-/// Bootstrap Initialization Helpers
-/// Export common Bootstrap initialization helpers based on patterns found in both themes
-////
+/**
+ * Bootstrap initialization helpers shared across BC WordPress themes.
+ * @module bc-theme-layer-bs5/js
+ */
 
 import * as bootstrap from 'bootstrap';
 
-// Export bootstrap for use in other modules
+/**
+ * Bootstrap namespace for Tab, Collapse, Tooltip, and third-party integrations.
+ * @type {typeof import('bootstrap')}
+ */
 export { bootstrap };
 
-// Initialize tooltips (Sitka pattern)
+/**
+ * Initialize all `[data-bs-toggle="tooltip"]` elements. Used by Sitka Spruce.
+ * @returns {import('bootstrap').Tooltip[]} Initialized tooltip instances
+ */
 export function initTooltips() {
   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
   const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
   return tooltipList;
 }
 
-// Initialize popovers (Bellevue 2022 pattern - used as tooltips)
+/**
+ * Initialize all `[data-bs-toggle="popover"]` elements. Used by Bellevue 2022 (popovers as tooltips).
+ * @returns {import('bootstrap').Popover[]} Initialized popover instances
+ */
 export function initPopovers() {
   const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
   const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
   return popoverList;
 }
 
-// Set bootstrap on window (Sitka pattern for legacy compatibility)
+/**
+ * Expose Bootstrap on `window` for legacy scripts (e.g. Sitka a11y-warnings).
+ * @returns {void}
+ */
 export function setWindowBootstrap() {
   window.bootstrap = bootstrap;
 }
