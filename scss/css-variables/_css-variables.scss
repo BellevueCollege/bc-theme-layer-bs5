@@ -40,6 +40,17 @@ $utility-colors: null !default;
 /// @param {Map|null} $grid-breakpoints - **Must not be null** when heading vars are enabled — drives md/lg media queries.
 $grid-breakpoints: null !default;
 
+/// Container Spacing Map (Small and Large breakpoints, small and large increments)
+$container-spacing-standard-sizes-map: (
+    small: 0.75rem,
+    large: 3rem,
+);
+
+$container-spacing-large-sizes-map: (
+    small: 1.5rem,
+    large: 3.75rem,
+);
+
 :root {
     @if $brand-colors {
         @each $name, $value in $brand-colors {
@@ -59,9 +70,11 @@ $grid-breakpoints: null !default;
 
     @if $generate-container-spacing {
         @if $prefixed-container-spacing {
-            --#{$css-var-prefix}container-spacing: 0.75rem;
+            --#{$css-var-prefix}container-spacing: #{map.get($container-spacing-standard-sizes-map, 'small')};
+            --#{$css-var-prefix}container-spacing-lg: #{map.get($container-spacing-large-sizes-map, 'small')};
         } @else {
-            --container-spacing: 0.75rem;
+            --container-spacing: #{map.get($container-spacing-standard-sizes-map, 'small')};
+            --container-spacing-lg: #{map.get($container-spacing-large-sizes-map, 'small')};
         }
     }
 
@@ -100,9 +113,11 @@ $grid-breakpoints: null !default;
         :root {
             @if $generate-container-spacing {
                 @if $prefixed-container-spacing {
-                    --#{$css-var-prefix}container-spacing: 3.75rem;
+                    --#{$css-var-prefix}container-spacing: #{map.get($container-spacing-large-sizes-map, 'large')};
+                    --#{$css-var-prefix}container-spacing-lg: #{map.get($container-spacing-large-sizes-map, 'large')};
                 } @else {
-                    --container-spacing: 3.75rem;
+                    --container-spacing: #{map.get($container-spacing-large-sizes-map, 'small')};
+                    --container-spacing-lg: #{map.get($container-spacing-large-sizes-map, 'large')};
                 }
             }
             @each $tag, $sizes in $heading-sizes {
