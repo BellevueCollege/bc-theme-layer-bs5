@@ -1,98 +1,52 @@
 ////
-/// Generates `:root` CSS custom properties for BC WordPress themes.
+/// `:root` CSS custom property generator.
 ///
-/// Import from the theme's `variables/_css.scss`:
-///   @use 'bc-theme-layer-bs5/scss/css-variables/css-variables' with (...);
+/// **When to import:** theme `variables/_css.scss` via `@use ... with (...)`.
+/// Import after shared tokens so `$brand-colors`, `$utility-colors`, and
+/// `$grid-breakpoints` are defined.
 ///
-/// Pass in maps from the theme (`$brand-colors`, `$utility-colors`, etc.).
-/// Do not import Bootstrap Sass variables here — this file only emits CSS vars.
+/// **Contract:** Emits `:root` rules only. Does not import Bootstrap Sass variables.
 ////
 
 @use "sass:map";
 
-// =============================================================================
-// Design values — edit these to change spacing site-wide
-// =============================================================================
-//
-// Container spacing uses two custom properties:
-//   --{prefix}container-spacing     standard gutter
-//   --{prefix}container-spacing-lg  wider gutter
-//
-// Map keys `small` and `large` are size slots, not breakpoints. Which slot
-// applies at each viewport is defined in the CSS output section below.
-
-/// Standard container gutter (`--*-container-spacing`).
-$container-spacing-standard-sizes-map: (
-    small: 0.75rem,
-    large: 3rem,
-);
-
-/// Wide container gutter (`--*-container-spacing-lg`).
-$container-spacing-large-sizes-map: (
-    small: 1.5rem,
-    large: 3.75rem,
-);
-
-// =============================================================================
-// Theme configuration — override via @use ... with (...)
-// =============================================================================
-
-/// Prefix for generated property names.
-/// Example: `sitka-` produces `--sitka-container-spacing`. Bellevue uses `b22-`.
+/// @param {String} $css-var-prefix ['sitka-'] - Prefix for generated custom properties (`b22-` for Bellevue).
 $css-var-prefix: 'sitka-' !default;
 
-/// When true, utility color keys are prefixed: `--sitka-gray-100`.
-/// When false, keys are used as-is: `--gray-100`. (Sitka: false, Bellevue: true.)
+/// @param {Boolean} $prefixed-utility-colors [true] - Prefix keys from `$utility-colors` (Bellevue: true, Sitka: false).
 $prefixed-utility-colors: true !default;
 
-/// When true, container spacing vars are prefixed: `--sitka-container-spacing`.
-/// When false: `--container-spacing`.
+/// @param {Boolean} $prefixed-container-spacing [true] - Prefix the container-spacing custom property.
 $prefixed-container-spacing: true !default;
 
-/// When true, heading font-size vars are prefixed: `--sitka-h1-font-size`.
-/// When false: `--h1-font-size`.
+/// @param {Boolean} $prefixed-heading-sizes [true] - Prefix responsive heading size custom properties.
 $prefixed-heading-sizes: true !default;
 
-/// Emit per-breakpoint heading font-size vars and responsive `--*-h1-font-size` aliases.
+/// @param {Boolean} $generate-heading-size-vars [true] - Emit responsive heading font-size variables.
 $generate-heading-size-vars: true !default;
 
-/// Emit `--*-container-spacing` vars with a larger value at the lg breakpoint.
+/// @param {Boolean} $generate-container-spacing [true] - Emit container-spacing variable with responsive updates.
 $generate-container-spacing: true !default;
 
-/// Nested map of heading sizes from the theme.
-/// Shape: `h1: (xs: (font-size: 2rem), md: (...), lg: (...))`.
-/// Required when `$generate-heading-size-vars` is true.
+/// @param {Map|null} $heading-sizes - Nested map: `h1: (xs: (font-size: 2rem), md: (...), lg: (...))`. Required when heading vars are enabled.
 $heading-sizes: null !default;
 
-/// BC brand color map from the theme. Keys include the `bc-` prefix.
-/// Example output: `--bc-blue: #003da5`.
+/// @param {Map|null} $brand-colors - BC brand color map (keys include `bc-` prefix). Required for brand var output.
 $brand-colors: null !default;
 
-/// Theme utility color map. Required for utility var output.
+/// @param {Map|null} $utility-colors - Theme utility color map. Required for utility var output.
 $utility-colors: null !default;
 
-/// Bootstrap breakpoint map from the theme.
-/// Required when heading size vars are enabled — drives md/lg media queries.
-/// Never pass null when `$generate-heading-size-vars` is true.
+/// @param {Map|null} $grid-breakpoints - **Must not be null** when heading vars are enabled — drives md/lg media queries.
 $grid-breakpoints: null !default;
 
-// =============================================================================
-// CSS output
-// =============================================================================
-
-// -----------------------------------------------------------------------------
-// :root — mobile-first defaults
-// -----------------------------------------------------------------------------
-
 :root {
-    // Brand colors — keys are emitted as-is (already include bc- prefix).
     @if $brand-colors {
         @each $name, $value in $brand-colors {
             --#{$name}: #{$value};
         }
     }
 
-    // Utility colors — optionally prefixed with $css-var-prefix.
     @if $utility-colors {
         @each $name, $value in $utility-colors {
             @if $prefixed-utility-colors {
@@ -103,18 +57,14 @@ $grid-breakpoints: null !default;
         }
     }
 
-    // Container spacing — uses each map's `small` slot at default viewport.
     @if $generate-container-spacing {
         @if $prefixed-container-spacing {
-            --#{$css-var-prefix}container-spacing: #{map.get($container-spacing-standard-sizes-map, 'small')};
-            --#{$css-var-prefix}container-spacing-lg: #{map.get($container-spacing-large-sizes-map, 'small')};
+            --#{$css-var-prefix}container-spacing: 0.75rem;
         } @else {
-            --container-spacing: #{map.get($container-spacing-standard-sizes-map, 'small')};
-            --container-spacing-lg: #{map.get($container-spacing-large-sizes-map, 'small')};
+            --container-spacing: 0.75rem;
         }
     }
 
-    // Heading sizes — one var per breakpoint, plus a default alias pointing at xs.
     @if $generate-heading-size-vars and $heading-sizes {
         @each $tag, $sizes in $heading-sizes {
             @each $breakpoint, $size in $sizes {
@@ -124,7 +74,6 @@ $grid-breakpoints: null !default;
                     --#{$tag}-font-size-#{$breakpoint}: #{map.get($size, 'font-size')};
                 }
             }
-
             @if $prefixed-heading-sizes {
                 --#{$css-var-prefix}#{$tag}-font-size: var(--#{$css-var-prefix}#{$tag}-font-size-xs);
             } @else {
@@ -134,12 +83,7 @@ $grid-breakpoints: null !default;
     }
 }
 
-// -----------------------------------------------------------------------------
-// Responsive overrides — md and lg breakpoints
-// -----------------------------------------------------------------------------
-
 @if $generate-heading-size-vars and $heading-sizes and $grid-breakpoints {
-    // md: point each heading's default alias at its md breakpoint var.
     @media screen and (min-width: map.get($grid-breakpoints, 'md')) {
         :root {
             @each $tag, $sizes in $heading-sizes {
@@ -152,22 +96,15 @@ $grid-breakpoints: null !default;
         }
     }
 
-    // lg: bump container spacing and point heading aliases at lg breakpoint vars.
     @media screen and (min-width: map.get($grid-breakpoints, 'lg')) {
         :root {
             @if $generate-container-spacing {
                 @if $prefixed-container-spacing {
-                    // Both spacing vars use the wide map's `large` slot (3.75rem).
-                    --#{$css-var-prefix}container-spacing: #{map.get($container-spacing-large-sizes-map, 'large')};
-                    --#{$css-var-prefix}container-spacing-lg: #{map.get($container-spacing-large-sizes-map, 'large')};
+                    --#{$css-var-prefix}container-spacing: 3.75rem;
                 } @else {
-                    // Unprefixed: standard spacing uses wide map `small` (1.5rem);
-                    // lg spacing uses wide map `large` (3.75rem).
-                    --container-spacing: #{map.get($container-spacing-large-sizes-map, 'small')};
-                    --container-spacing-lg: #{map.get($container-spacing-large-sizes-map, 'large')};
+                    --container-spacing: 3.75rem;
                 }
             }
-
             @each $tag, $sizes in $heading-sizes {
                 @if $prefixed-heading-sizes {
                     --#{$css-var-prefix}#{$tag}-font-size: var(--#{$css-var-prefix}#{$tag}-font-size-lg);
