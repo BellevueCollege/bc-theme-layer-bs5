@@ -1,6 +1,6 @@
 # bc-theme-layer-bs5
 
-Shared Bootstrap 5 SCSS configuration for Bellevue College WordPress themes. Single source of truth for Bootstrap tokens, the Sass config stack, component presets, CSS variable generation, editor scoping, and JS init helpers.
+Shared Bootstrap 5 SCSS and theme JavaScript for Bellevue College WordPress themes. Single source of truth for Bootstrap tokens, the Sass config stack, component presets, CSS variable generation, editor scoping, JS init helpers, and shared UI modules.
 
 ## Installation
 
@@ -29,7 +29,11 @@ To unlink: `npm unlink bc-theme-layer-bs5` in the theme, then `npm install`.
 
 ```
 bc-theme-layer-bs5/
-├── js/index.js
+├── js/
+│   ├── index.js          # Bootstrap helpers + module re-exports
+│   ├── core/             # ComponentBase, WindowState, AnimationBase
+│   ├── modules/          # AccessibleMenu, ButtonToggle, HeaderState, Slider
+│   └── utils/            # inViewport (used by AnimationBase)
 └── scss/
     ├── bootstrap/
     │   ├── _tokens.scss      # BC variable overrides (!default)
@@ -123,12 +127,25 @@ Import config **outside** `@include editor-scope` so `:root` rules are not neste
 ### JavaScript helpers
 
 ```javascript
-import { bootstrap, initTooltips, initPopovers, setWindowBootstrap } from 'bc-theme-layer-bs5/js';
+import {
+  bootstrap,
+  initTooltips,
+  initPopovers,
+  setWindowBootstrap,
+  AccessibleMenu,
+  ButtonToggle,
+  HeaderState,
+  Slider,
+} from 'bc-theme-layer-bs5/js';
 ```
 
 - `initTooltips()` — Sitka
 - `initPopovers()` — Bellevue (popovers used as tooltips)
 - `setWindowBootstrap()` — exposes `window.bootstrap` for legacy scripts
+- `ComponentBase`, `WindowState`, `AnimationBase` — shared component framework
+- `AccessibleMenu`, `ButtonToggle`, `HeaderState`, `Slider` — shared UI modules
+
+`Slider` requires `swiper` in the consuming theme (`peerDependency`). `ButtonToggle` optional focus trapping uses `focus-trap` from this package.
 
 ## Presets
 
@@ -151,7 +168,7 @@ Import config once per bundle, then presets. Prevents duplicate CSS and unpredic
 
 - Bellevue migration from `_full` → `_minimal` + block-level presets (Sitka pattern)
 - Sass `@import` → `@use` when Bootstrap 6 supports it
-- Optional shared helpers for Tab/Collapse if themes converge
+- Shared find-in-page (`hidden=until-found`) for accordion, tabs, and tabcordion
 
 ## License
 

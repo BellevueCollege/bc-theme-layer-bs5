@@ -2,6 +2,14 @@
 
 All notable changes to `bc-theme-layer-bs5` are documented here.
 
+## Unreleased
+
+### Added
+
+- Shared theme JS: `ComponentBase`, `WindowState`, `AnimationBase`, `AccessibleMenu`, `ButtonToggle`, `HeaderState`, and `Slider`
+- `inViewport` utility (legacy fallback for `AnimationBase`)
+- `events` and `focus-trap` dependencies; optional `swiper` peer dependency for `Slider`
+
 ## [1.1.0] - 2026-07-01
 
 ### Changed
