@@ -3,8 +3,8 @@
  * AccessibleMenu class.
  */
 
-import ButtonToggle from './button-toggle';
-import ComponentBase from '../core/component-base';
+import ButtonToggle from './button-toggle.js';
+import ComponentBase from '../core/component-base.js';
 
 /**
  * The AccessibleMenu class makes any menu tree accessible by keyboard

@@ -145,7 +145,7 @@ import {
 - `ComponentBase`, `WindowState`, `AnimationBase` — shared component framework
 - `AccessibleMenu`, `ButtonToggle`, `HeaderState`, `Slider` — shared UI modules
 
-`Slider` requires `swiper` in the consuming theme (`peerDependency`). `ButtonToggle` optional focus trapping uses `focus-trap` from this package.
+`Slider` depends on `swiper` from this package. `ButtonToggle` optional focus trapping uses `focus-trap`.
 
 ## Presets
 

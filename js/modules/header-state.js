@@ -2,8 +2,8 @@
  * @file
  * HeaderState class.
  */
-import ComponentBase from '../core/component-base';
-import WindowState from '../core/window-state';
+import ComponentBase from '../core/component-base.js';
+import WindowState from '../core/window-state.js';
 
 export default class HeaderState extends ComponentBase {
   /**

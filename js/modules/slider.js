@@ -1,8 +1,8 @@
 import Swiper from 'swiper';
 import { Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
-import ComponentBase from '../core/component-base';
-import WindowState from '../core/window-state';
+import ComponentBase from '../core/component-base.js';
+import WindowState from '../core/window-state.js';
 
 /**
  * This class works in between app.js and swiper so custom functionality can be

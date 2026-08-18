@@ -3,9 +3,9 @@
  * AnimationBase class.
  */
 
-import ComponentBase from './component-base';
-import WindowState from './window-state';
-import { inViewport } from '../utils/in-viewport';
+import ComponentBase from './component-base.js';
+import WindowState from './window-state.js';
+import { inViewport } from '../utils/in-viewport.js';
 
 /**
  * The AnimationBase class is a simple way to toggle animate classes on single

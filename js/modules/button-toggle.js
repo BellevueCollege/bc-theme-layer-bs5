@@ -2,8 +2,8 @@
  * @file
  * ButtonToggle class.
  */
-import ComponentBase from '../core/component-base';
-import WindowState from '../core/window-state';
+import ComponentBase from '../core/component-base.js';
+import WindowState from '../core/window-state.js';
 import * as focusTrap from 'focus-trap';
 /**
  * The ButtonToggle class provides an easy way to add a toggleable button. The

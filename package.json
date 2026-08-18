@@ -37,14 +37,7 @@
     "bootstrap": "^5.3.3",
     "@popperjs/core": "^2.11.8",
     "events": "^3.3.0",
-    "focus-trap": "^7.6.2"
-  },
-  "peerDependencies": {
+    "focus-trap": "^7.6.2",
     "swiper": "^12.0.0"
-  },
-  "peerDependenciesMeta": {
-    "swiper": {
-      "optional": true
-    }
   }
 }
