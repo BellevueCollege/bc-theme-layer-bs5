@@ -39,3 +39,6 @@
 @import "~bootstrap/scss/offcanvas";
 @import "~bootstrap/scss/placeholders";
 
+// BC enhancement: find-in-page support for hidden=until-found (must follow Reboot).
+@import '../bootstrap/hidden-until-found';
+

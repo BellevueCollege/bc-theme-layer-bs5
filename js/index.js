@@ -12,6 +12,7 @@ export { default as AccessibleMenu } from './modules/accessible-menu.js';
 export { default as ButtonToggle } from './modules/button-toggle.js';
 export { default as HeaderState } from './modules/header-state.js';
 export { default as Slider } from './modules/slider.js';
+export { UntilFoundCollapse, UntilFoundTab } from './modules/until-found-reveal.js';
 
 /**
  * Bootstrap namespace for Tab, Collapse, Tooltip, and third-party integrations.

@@ -32,13 +32,14 @@ bc-theme-layer-bs5/
 ├── js/
 │   ├── index.js          # Bootstrap helpers + module re-exports
 │   ├── core/             # ComponentBase, WindowState, AnimationBase
-│   ├── modules/          # AccessibleMenu, ButtonToggle, HeaderState, Slider
+│   ├── modules/          # AccessibleMenu, ButtonToggle, HeaderState, Slider, until-found
 │   └── utils/            # inViewport (used by AnimationBase)
 └── scss/
     ├── bootstrap/
     │   ├── _tokens.scss      # BC variable overrides (!default)
     │   ├── _vars.scss        # Sass only — no CSS output
-    │   └── _config.scss      # _vars + root/helpers/utilities/api
+    │   ├── _config.scss      # _vars + root/helpers/utilities/api
+    │   └── _hidden-until-found.scss
     ├── css-variables/
     │   └── _css-variables.scss
     ├── editor/
@@ -135,7 +136,8 @@ import {
   AccessibleMenu,
   ButtonToggle,
   HeaderState,
-  Slider,
+  UntilFoundCollapse,
+  UntilFoundTab,
 } from 'bc-theme-layer-bs5/js';
 ```
 
@@ -144,8 +146,9 @@ import {
 - `setWindowBootstrap()` — exposes `window.bootstrap` for legacy scripts
 - `ComponentBase`, `WindowState`, `AnimationBase` — shared component framework
 - `AccessibleMenu`, `ButtonToggle`, `HeaderState`, `Slider` — shared UI modules
+- `UntilFoundCollapse`, `UntilFoundTab` — find-in-page for collapsed accordion panels and inactive tab panes
 
-`Slider` depends on `swiper` from this package. `ButtonToggle` optional focus trapping uses `focus-trap`.
+`Slider` depends on `swiper` from this package. `ButtonToggle` optional focus trapping uses `focus-trap`. Find-in-page SCSS ships with `_minimal` and `_full` presets.
 
 ## Presets
 
@@ -168,7 +171,6 @@ Import config once per bundle, then presets. Prevents duplicate CSS and unpredic
 
 - Bellevue migration from `_full` → `_minimal` + block-level presets (Sitka pattern)
 - Sass `@import` → `@use` when Bootstrap 6 supports it
-- Shared find-in-page (`hidden=until-found`) for accordion, tabs, and tabcordion
 
 ## License
 
