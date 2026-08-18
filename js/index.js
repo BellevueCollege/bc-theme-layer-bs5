@@ -13,6 +13,7 @@ export { default as ButtonToggle } from './modules/button-toggle.js';
 export { default as HeaderState } from './modules/header-state.js';
 export { default as Slider } from './modules/slider.js';
 export { UntilFoundCollapse, UntilFoundTab } from './modules/until-found-reveal.js';
+export { inViewport, centerInViewport } from './utils/in-viewport.js';
 
 /**
  * Bootstrap namespace for Tab, Collapse, Tooltip, and third-party integrations.
